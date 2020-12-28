@@ -1,0 +1,71 @@
+﻿@page "/find"
+@using BlazorApp.Data
+@inject StudentServices FindStudent
+
+<h1>Tìm kiếm sinh viên</h1>
+
+<div class="row">
+    <div class="col-3">
+
+    </div>
+    <div class="col-6">
+        <div class="input-group mb-2">
+            <input type="text" @bind="information" class="form-control" placeholder="Tìm kiếm sinh viên...." />
+            <div class="input-group-append">
+                <button class="btn btn-outline-info" type="submit"><span class="oi oi-magnifying-glass"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+
+    </div>
+    <br />
+    <div class="Information col-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Giới tính</th>
+                    <th scope="col">Ngày sinh</th>
+                    <th scope="col">MSSV</th>
+                    <th scope="col">Lớp</th>
+                    <th scope="col">Điện thoại</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Quê quán</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in students)
+                {
+                    if (information == i.Mssv || information == i.Hoten || information == i.QueQuan || information == i.Gioitinh || information == i.Lop)
+                    {
+                        <tr>
+                            <td scope="col">@i.Id</td>
+                            <td scope="col">@i.Hoten</td>
+                            <td scope="col">@i.Gioitinh</td>
+                            <td scope="col">@i.NgaySinh</td>
+                            <td scope="col">@i.Mssv</td>
+                            <td scope="col">@i.Lop</td>
+                            <td scope="col">@i.SoDienThoai</td>
+                            <td scope="col">@i.Email</td>
+                            <td scope="col">@i.QueQuan</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>        
+    </div>
+</div>
+
+@code{
+    private List<Student> students;
+    public string information;
+    private Student _item;
+
+    protected override void OnInitialized()
+    {
+        students = FindStudent.GetData();
+    }
+
+}

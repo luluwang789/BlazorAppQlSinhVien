@@ -1,0 +1,74 @@
+﻿@page "/"
+@using BlazorApp.Data
+@inject StudentServices Service
+
+<div class="container-fluid">
+    <h1>Quản lý sinh viên</h1>
+    <div class="row">
+        <div class="col-10">
+
+        </div>
+        <div class="col-2">
+            <NavLink class="btn btn-outline-success" href="add">
+                <span class="oi oi-plus" aria-hidden="true"></span> Add
+            </NavLink>
+            @*<span class="oi oi-plus"></span><input type="button" class="btn btn-outline-success" value="Add">*@
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Tên</th>
+                <th scope="col">Ngày sinh</th>
+                <th scope="col">MSSV</th>
+                <th scope="col">Lớp</th>
+                <th scope="col">Email</th>
+                <th scope="col">Chức năng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in students)
+            {
+                var link = $"info/{i.Id}";
+                var link_edit = $"edit/{i.Id}";
+                <tr>
+                    <td scope="col">@i.Id</td>
+                    <td scope="col">@i.Hoten</td>
+                    <td scope="col">@i.NgaySinh.ToShortDateString()</td>
+                    <td scope="col">@i.Mssv</td>
+                    <td scope="col">@i.Lop</td>
+                    <td scope="col">@i.Email</td>
+                    <td scope="col">
+                        <NavLink href="@link">
+                            <input type="button" name="name" class="btn btn-outline-info" value="Info" />
+                        </NavLink>
+                        <NavLink href="@link_edit">
+                            <input type="button" name="name" class="btn btn-outline-primary" value="Edit" />
+                        </NavLink>
+                        <input type="button" @onclick="@(e => Delete(i))" name="name" class="btn btn-outline-danger" value="Delete" />
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@code{
+    private List<Student> students;
+    private string id;
+    private Student _item;
+
+    protected override void OnInitialized()
+    {
+        students = Service.GetData();
+    }
+
+    private void Delete(Student _item)
+    {
+        students.Remove(_item);
+        Service.SaveChanges();
+    }
+}
+

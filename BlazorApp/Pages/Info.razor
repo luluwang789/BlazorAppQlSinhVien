@@ -1,0 +1,44 @@
+﻿@page "/info/{Id}"
+@using BlazorApp.Data 
+@inject StudentServices Service
+
+<h3>Info</h3>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 border-dark">
+            @foreach (var i in students)
+            {
+                if (Id == i.Id)
+                {
+                    <strong>Id sinh viên: </strong> <span>@i.Id</span> <br />
+                    <strong>Tên sinh viên: </strong> <span>@i.Hoten</span> <br />
+                    <strong>Giới tính: </strong> <span>@i.Gioitinh</span> <br />
+                    <strong>Ngày sinh: </strong> <span>@i.NgaySinh</span> <br />
+                    <strong>Mã số sinh viên: </strong> <span>@i.Mssv</span> <br />
+                    <strong>Lớp: </strong> <span>@i.Lop</span> <br />
+                    <strong>Số điện thoại: </strong> <span>@i.SoDienThoai</span> <br />
+                    <strong>Email: </strong> <span>@i.Email</span> <br />
+                    <strong>Quê quán: </strong> <span>@i.QueQuan</span> <br />
+                }
+            }
+        </div>
+        <div class="col-6">
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<Student> students;
+    [Parameter]
+    public string Id { get; set; }
+    private Student _item;
+
+    protected override void OnInitialized()
+    {
+        students = Service.GetData();
+    }
+}

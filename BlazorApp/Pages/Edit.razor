@@ -1,0 +1,66 @@
+﻿@page "/edit/{Id}"
+@using BlazorApp.Data
+@inject StudentServices service
+
+<h3>Sửa sinh viên</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            @foreach (var i in students)
+            {
+                if (Id == i.Id)
+                {
+                    <input type="hidden" @bind="i.Id" class="form-control" placeholder="id sinh vien" />
+                    <label>Họ tên</label>
+                    <input type="text" @bind="i.Hoten" class="form-control" placeholder="Nguyễn Văn A" />
+                    <label>Giới tính</label>
+                    <select @bind="i.Gioitinh" class="form-control">
+                        <option value="">----------</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                    <label>Ngày sinh</label>
+                    <input type="datetime-local" @bind="i.NgaySinh" class="form-control" placeholder="" />
+                    <label>Mã số sinh viên</label>
+                    <input type="text" @bind="i.Mssv" class="form-control" placeholder="4401104076" />
+                    <label>Lớp</label>
+                    <input type="text" @bind="i.Lop" class="form-control" placeholder="K44CNTTA" />
+                    <label>Số điện thoại</label>
+                    <input type="text" @bind="i.SoDienThoai" class="form-control" placeholder="0981512780" />
+                    <label>Email</label>
+                    <input type="text" @bind="i.Email" class="form-control" placeholder="duchoaikevin279@gmail.com" />
+                    <label>Quê quán</label>
+                    <input type="text" @bind="i.QueQuan" class="form-control" placeholder="Ninh Thuận" />
+                    <br />
+                    <NavLink href="">
+                        <input type="submit" @onclick="DoAdd" class="btn btn-outline-primary" value="Sửa" />
+                    </NavLink>
+                }
+            }
+
+
+        </div>
+    </div>
+    <div class="col-md-6">
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private List<Student> students;
+    private Student _item;
+
+    protected override void OnInitialized()
+    {
+        students = service.GetData();
+    }
+
+    private void DoAdd()
+    {
+        service.SaveChanges();
+    }
+}

@@ -1,0 +1,136 @@
+﻿@page "/add"
+@using BlazorApp.Data
+@inject StudentServices Service
+@using System.Text
+
+<h1>Thêm sinh viên</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <input type="hidden" @bind="Id" class="form-control" placeholder="id sinh vien" />
+            <label>Họ tên</label>
+            <input type="text" @bind="Name" class="form-control" placeholder="Nguyễn Văn A" />
+            <label>Giới tính</label>
+            <select @bind="Gender" class="form-control">
+                <option value="">----------</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+            </select>
+            <label>Ngày sinh</label>
+            <input type="datetime-local" @bind="DateOfBirth" class="form-control" placeholder="" />
+            <label>Mã số sinh viên</label>
+            <input type="text" @bind="StuCode" class="form-control" placeholder="4401104076" />
+            <label>Lớp</label>
+            <input type="text" @bind="Class" class="form-control" placeholder="K44CNTTA" />
+            <label>Số điện thoại</label>
+            <input type="text" @bind="Phone" class="form-control" placeholder="0981512780" />
+            <label>Email</label>
+            <input type="text" @bind="Email" class="form-control" placeholder="duchoaikevin279@gmail.com" />
+            <label>Quê quán</label>
+            <input type="text" @bind="Country" class="form-control" placeholder="Ninh Thuận" />
+            <br />
+            <NavLink href="">
+                <input type="submit" @onclick="DoAdd" class="btn btn-outline-primary" value="Thêm" />
+            </NavLink>
+
+        </div>
+    </div>
+    <div class="col-md-6">
+
+    </div>
+</div>
+
+@code {
+    private List<Student> students;
+    private string Id;
+    private string Name;
+    private string Gender;
+    private string StuCode;
+    private DateTime DateOfBirth = new DateTime();
+    private string Class;
+    private string Phone;
+    private string Email;
+    private string Country;
+    private Student _item;
+
+    protected override void OnInitialized()
+    {
+        students = Service.GetData();
+        _item = students != null && students.Count > 0 ? students[0] : null;
+    }
+
+    public class RandomGenerator
+    {
+        // Instantiate random number generator.
+        // It is better to keep a single Random instance
+        // and keep using Next on the same instance.
+        private readonly Random _random = new Random();
+
+        // Generates a random number within a range.
+        public int RandomNumber(int min, int max)
+        {
+            return _random.Next(min, max);
+        }
+
+        // Generates a random string with a given size.
+        public string RandomString(int size, bool lowerCase = false)
+        {
+            var builder = new StringBuilder(size);
+
+            // Unicode/ASCII Letters are divided into two blocks
+            // (Letters 65–90 / 97–122):
+            // The first group containing the uppercase letters and
+            // the second group containing the lowercase.
+
+            // char is a single Unicode character
+            char offset = lowerCase ? 'a' : 'A';
+            const int lettersOffset = 26; // A...Z or a..z: length = 26
+
+            for (var i = 0; i < size; i++)
+            {
+                var @char = (char)_random.Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+
+            return lowerCase ? builder.ToString().ToLower() : builder.ToString();
+        }
+
+        // Generates a random password.
+        // 4-LowerCase + 4-Digits + 2-UpperCase
+        public string RandomPassword()
+        {
+            var passwordBuilder = new StringBuilder();
+
+            // 4-Letters lower case
+            passwordBuilder.Append(RandomString(4, true));
+
+            // 4-Digits between 1000 and 9999
+            passwordBuilder.Append(RandomNumber(1000, 9999));
+
+            // 2-Letters upper case
+            passwordBuilder.Append(RandomString(2));
+            return passwordBuilder.ToString();
+        }
+    }
+
+    private void DoAdd()
+    {
+        var generator = new RandomGenerator();
+        if (!string.IsNullOrWhiteSpace(Name))
+        {
+            students.Add(new Student() {
+                Id = generator.RandomPassword(),
+                Hoten = Name,
+                Gioitinh = Gender,
+                Mssv = StuCode,
+                NgaySinh = DateOfBirth,
+                Lop = Class,
+                SoDienThoai = Phone,
+                Email = Email,
+                QueQuan = Country
+            });
+        }
+        Service.SaveChanges();
+    }
+}
